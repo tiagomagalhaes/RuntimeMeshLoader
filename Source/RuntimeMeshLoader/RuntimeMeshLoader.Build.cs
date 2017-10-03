@@ -15,13 +15,12 @@ public class RuntimeMeshLoader : ModuleRules
         get { return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty/")); }
     }
 
-    public RuntimeMeshLoader(TargetInfo Target)
-	{
+    public RuntimeMeshLoader(ReadOnlyTargetRules Target) : base(Target)
+    {
         PublicIncludePaths.AddRange(
 			new string[] {
 				"RuntimeMeshLoader/Public",
                 Path.Combine(ThirdPartyPath, "assimp/include")
-				// ... add public include paths required here ...
 			}
 		);
 				
@@ -29,7 +28,6 @@ public class RuntimeMeshLoader : ModuleRules
 		PrivateIncludePaths.AddRange(
 			new string[] {
 				"RuntimeMeshLoader/Private",
-				// ... add other private include paths required here ...
 			}
 			);
 			
@@ -43,7 +41,6 @@ public class RuntimeMeshLoader : ModuleRules
                 "RHI",
                 "RenderCore",
                 "ProceduralMeshComponent"
-                // ... add other public dependencies that you statically link with here ...
 			}
 			);
 
@@ -53,7 +50,6 @@ public class RuntimeMeshLoader : ModuleRules
 			{
 				"Slate",
 				"SlateCore",
-				// ... add private dependencies that you statically link with here ...	
 			}
 			);
 		
