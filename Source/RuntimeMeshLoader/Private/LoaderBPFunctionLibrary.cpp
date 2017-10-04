@@ -13,13 +13,6 @@ FReturnedData ULoaderBPFunctionLibrary::LoadMesh(FString filepath, EPathType typ
 	result.bSuccess=false;
 	result.meshInfo.Empty();
 	result.NumMeshes = 0;
-	//bEnableCollision:: StaticMeshSection
-	//result.meshInfo.Vertices.Empty();
-	//result.meshInfo.Triangles.Empty();
-	//result.meshInfo.Normals.Empty();
-	//result.meshInfo.UV0.Empty();
-	//result.meshInfo.VertexColors.Empty();
-	//result.meshInfo.Tangents.Empty();
 
 	if (filepath.IsEmpty())
 	{
@@ -55,7 +48,6 @@ FReturnedData ULoaderBPFunctionLibrary::LoadMesh(FString filepath, EPathType typ
 
 		for (uint32 i = 0; i < mScenePtr->mNumMeshes; ++i)
 		{
-			//deal with the relative tranformation,it is broken now.
 			for (uint32 m=0;m<mScenePtr->mRootNode->mNumChildren;++m)
 			{
 				aiMatrix4x4 tempTrans=mScenePtr->mRootNode->mChildren[m]->mTransformation;
@@ -68,8 +60,6 @@ FReturnedData ULoaderBPFunctionLibrary::LoadMesh(FString filepath, EPathType typ
 				result.meshInfo[i].RelativeTransform = FTransform(tempMatrix);
 			}
 
-
-
 			for (uint32 j = 0; j < mScenePtr->mMeshes[i]->mNumVertices; ++j)
 			{
 
@@ -77,9 +67,8 @@ FReturnedData ULoaderBPFunctionLibrary::LoadMesh(FString filepath, EPathType typ
 					mScenePtr->mMeshes[i]->mVertices[j].x, 
 					mScenePtr->mMeshes[i]->mVertices[j].y, 
 					mScenePtr->mMeshes[i]->mVertices[j].z);
-				result.meshInfo[i].Vertices.Push(vertex);
+				result.meshInfo[i].Vertices.Push(result.meshInfo[i].RelativeTransform.TransformVector(vertex));
 
-				//法线
 				if (mScenePtr->mMeshes[i]->HasNormals())
 				{
 					FVector normal = FVector(
@@ -93,7 +82,6 @@ FReturnedData ULoaderBPFunctionLibrary::LoadMesh(FString filepath, EPathType typ
 					result.meshInfo[i].Normals.Push(FVector::ZeroVector);
 				}
 
-				//UV坐标 - 坐标错乱
 				if (mScenePtr->mMeshes[i]->HasTextureCoords(0) )
 				{
 
@@ -101,7 +89,6 @@ FReturnedData ULoaderBPFunctionLibrary::LoadMesh(FString filepath, EPathType typ
 					result.meshInfo[i].UV0.Add(uv);
 				}
 
-				//切线
 				if (mScenePtr->mMeshes[i]->HasTangentsAndBitangents())
 				{
 					FProcMeshTangent meshTangent = FProcMeshTangent(
@@ -112,7 +99,6 @@ FReturnedData ULoaderBPFunctionLibrary::LoadMesh(FString filepath, EPathType typ
 					result.meshInfo[i].Tangents.Push(meshTangent);
 				}
 
-				//顶点颜色
 				if (mScenePtr->mMeshes[i]->HasVertexColors(0))
 				{
 						FLinearColor color = FLinearColor(
