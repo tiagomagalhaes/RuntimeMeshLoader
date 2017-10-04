@@ -44,7 +44,8 @@ FReturnedData ULoaderBPFunctionLibrary::LoadMesh(FString filepath, EPathType typ
 
 	if (mScenePtr==nullptr)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("Runtime Mesh Loader: Read mesh file failure.\n"));
+		FString Error(mImporter.GetErrorString());
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *Error);
 		return result;
 	}
 
